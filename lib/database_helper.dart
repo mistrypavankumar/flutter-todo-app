@@ -85,9 +85,10 @@ class DatabaseHelper {
     """);
 
     return List.generate(todoMap.length,(index){
-        return Task(id: todoMap[index]['id'],
+        return Todo(
+        id: todoMap[index]['id'],
         title: todoMap[index]['title'],
-        description: todoMap[index]['taskId'],
+        taskId: todoMap[index]['taskId'],
         isDone: todoMap[index]['isDone']
         );
     });

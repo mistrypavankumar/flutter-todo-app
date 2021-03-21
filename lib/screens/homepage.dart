@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_todo_app_using_sqlit/database_helper.dart';
+
+import '../widget.dart';
+import 'taskpage.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -6,6 +10,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  DatabaseHelper _dbHelper = DatabaseHelper();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,20 +35,35 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Expanded(
-                  child: FutureBuilder(builder: (context, snapshot) {
-                    return ScrollConfiguration(
-                      // behavior: NoGlowBehaviour(),
-                      child: ListView.builder(
-                        itemCount: 50,
-                        itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: (){},
-
-                          child: Text("Hello"),
+                  child: FutureBuilder(
+                      initialData: [],
+                      future: _dbHelper.getTasks(),
+                      builder: (context, snapshot) {
+                        return ScrollConfiguration(
+                          behavior: NoGlowBehaviour(),
+                          child: ListView.builder(
+                              itemCount: snapshot.data.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => TaskPage(
+                                                task: snapshot.data[index],
+                                              )),
+                                    ).then((value) {
+                                      setState(() {});
+                                    });
+                                  },
+                                  child: TaskCardWidget(
+                                    title: snapshot.data[index].title,
+                                    desc: snapshot.data[index].description,
+                                  ),
+                                );
+                              }),
                         );
                       }),
-                    );
-                  }),
                 )
               ],
             ),

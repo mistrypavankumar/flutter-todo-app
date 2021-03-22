@@ -3,12 +3,13 @@ import 'package:flutter_todo_app_using_sqlit/models/task.dart';
 import 'package:flutter_todo_app_using_sqlit/models/todo.dart';
 
 import '../database_helper.dart';
-import '../widget.dart';
+import '../widgets.dart';
 
 class TaskPage extends StatefulWidget {
   final Task task;
 
   TaskPage({@required this.task});
+
   @override
   _TaskPageState createState() => _TaskPageState();
 }
@@ -17,20 +18,20 @@ class _TaskPageState extends State<TaskPage> {
   DatabaseHelper _dbHelper = DatabaseHelper();
 
   int _taskId = 0;
-  String _taskTitle = "Hello";
-  String _taskDescription = "Hiii";
+  String _taskTitle = "";
+  String _taskDescription = "";
 
   FocusNode _titleFocus;
   FocusNode _descriptionFocus;
   FocusNode _todoFocus;
 
-  bool _contentVisible = false;
+  bool _contentVisile = true;
 
   @override
   void initState() {
     if (widget.task != null) {
       // Set visibility to true
-      _contentVisible = true;
+      _contentVisile = false;
 
       _taskTitle = widget.task.title;
       _taskDescription = widget.task.description;
@@ -91,13 +92,15 @@ class _TaskPageState extends State<TaskPage> {
                                 // Check if the task is null
                                 if (widget.task == null) {
                                   Task _newTask = Task(title: value);
-                                  _taskId = await _dbHelper.insertTask(_newTask);
+                                  _taskId =
+                                      await _dbHelper.insertTask(_newTask);
                                   setState(() {
-                                    _contentVisible = true;
+                                    _contentVisile = true;
                                     _taskTitle = value;
                                   });
                                 } else {
-                                  await _dbHelper.updateTaskTitle(_taskId, value);
+                                  await _dbHelper.updateTaskTitle(
+                                      _taskId, value);
                                   print("Task Updated");
                                 }
                                 _descriptionFocus.requestFocus();
@@ -120,7 +123,7 @@ class _TaskPageState extends State<TaskPage> {
                     ),
                   ),
                   Visibility(
-                    visible: _contentVisible,
+                    visible: true,
                     child: Padding(
                       padding: EdgeInsets.only(
                         bottom: 12.0,
@@ -128,15 +131,17 @@ class _TaskPageState extends State<TaskPage> {
                       child: TextField(
                         focusNode: _descriptionFocus,
                         onSubmitted: (value) async {
-                          if(value != ""){
-                            if(_taskId != 0){
-                              await _dbHelper.updateTaskDescription(_taskId, value);
+                          if (value != "") {
+                            if (_taskId != 0) {
+                              await _dbHelper.updateTaskDescription(
+                                  _taskId, value);
                               _taskDescription = value;
                             }
                           }
                           _todoFocus.requestFocus();
                         },
-                        controller: TextEditingController()..text = _taskDescription,
+                        controller: TextEditingController()
+                          ..text = _taskDescription,
                         decoration: InputDecoration(
                           hintText: "Enter Description for the task...",
                           border: InputBorder.none,
@@ -148,7 +153,7 @@ class _TaskPageState extends State<TaskPage> {
                     ),
                   ),
                   Visibility(
-                    visible: _contentVisible,
+                    visible: _contentVisile,
                     child: FutureBuilder(
                       initialData: [],
                       future: _dbHelper.getTodo(_taskId),
@@ -159,10 +164,12 @@ class _TaskPageState extends State<TaskPage> {
                             itemBuilder: (context, index) {
                               return GestureDetector(
                                 onTap: () async {
-                                  if(snapshot.data[index].isDone == 0){
-                                    await _dbHelper.updateTodoDone(snapshot.data[index].id, 1);
+                                  if (snapshot.data[index].isDone == 0) {
+                                    await _dbHelper.updateTodoDone(
+                                        snapshot.data[index].id, 1);
                                   } else {
-                                    await _dbHelper.updateTodoDone(snapshot.data[index].id, 0);
+                                    await _dbHelper.updateTodoDone(
+                                        snapshot.data[index].id, 0);
                                   }
                                   setState(() {});
                                 },
@@ -180,7 +187,7 @@ class _TaskPageState extends State<TaskPage> {
                     ),
                   ),
                   Visibility(
-                    visible: _contentVisible,
+                    visible: _contentVisile,
                     child: Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: 24.0,
@@ -214,7 +221,7 @@ class _TaskPageState extends State<TaskPage> {
                                     Todo _newTodo = Todo(
                                       title: value,
                                       isDone: 0,
-                                        taskId: _taskId,
+                                      taskId: _taskId,
                                     );
                                     await _dbHelper.insertTodo(_newTodo);
                                     setState(() {});
@@ -237,13 +244,13 @@ class _TaskPageState extends State<TaskPage> {
                 ],
               ),
               Visibility(
-                visible: _contentVisible,
+                visible: _contentVisile,
                 child: Positioned(
                   bottom: 24.0,
                   right: 24.0,
                   child: GestureDetector(
                     onTap: () async {
-                      if(_taskId != 0) {
+                      if (_taskId != 0) {
                         await _dbHelper.deleteTask(_taskId);
                         Navigator.pop(context);
                       }

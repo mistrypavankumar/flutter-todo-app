@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'constants/constans.dart';
+
 class TaskCardWidget extends StatelessWidget {
   final String title;
   final String desc;
@@ -31,8 +33,7 @@ class TaskCardWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 10.0),
             child: Text(
-              desc ?? 
-              "No Description Added",
+              desc ?? "No Description Added",
               style: TextStyle(
                 fontSize: 16,
                 height: 1.5,
@@ -43,5 +44,59 @@ class TaskCardWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class TodoWidget extends StatelessWidget {
+  final String text;
+  final bool isDone;
+
+  TodoWidget({this.text, @required this.isDone});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 24,
+        vertical: 8,
+      ),
+      child: Row(
+        children: [
+          Container(
+            margin: const EdgeInsets.only(right: 12),
+            width: 25,
+            height: 25,
+            decoration: BoxDecoration(
+              color: isDone ? primaryColor : Colors.transparent,
+              borderRadius: BorderRadius.circular(6),
+              border: isDone
+                  ? null
+                  : Border.all(
+                      color: borderColor,
+                      width: 1.5,
+                    ),
+            ),
+            child: Image(
+              image: AssetImage("assets/images/check_icon.png"),
+            ),
+          ),
+          Text(
+            text ?? "(Unnamed Todo)",
+            style: TextStyle(
+              color: isDone ? titleColor : lightGreyColor,
+              fontSize: 16,
+              fontWeight: isDone ? FontWeight.bold : FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class NoGlowBehaviour extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
   }
 }

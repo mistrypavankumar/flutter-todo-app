@@ -6,7 +6,10 @@ class TaskCardWidget extends StatelessWidget {
   final String title;
   final String desc;
 
-  TaskCardWidget({this.title, this.desc});
+  TaskCardWidget({
+    this.title,
+    this.desc,
+  });
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -79,12 +82,14 @@ class TodoWidget extends StatelessWidget {
               image: AssetImage("assets/images/check_icon.png"),
             ),
           ),
-          Text(
-            text ?? "(Unnamed Todo)",
-            style: TextStyle(
-              color: isDone ? titleColor : lightGreyColor,
-              fontSize: 16,
-              fontWeight: isDone ? FontWeight.bold : FontWeight.w500,
+          Flexible(
+            child: Text(
+              text ?? "(Unnamed Todo)",
+              style: TextStyle(
+                color: isDone ? titleColor : lightGreyColor,
+                fontSize: 16,
+                fontWeight: isDone ? FontWeight.bold : FontWeight.w500,
+              ),
             ),
           ),
         ],

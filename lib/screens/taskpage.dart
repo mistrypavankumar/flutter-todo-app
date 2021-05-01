@@ -263,9 +263,31 @@ class _TaskpageState extends State<Taskpage> {
                   child: GestureDetector(
                     onTap: () async {
                       if (_taskId != 0) {
-                        await _dbHelper.deleteTask(_taskId);
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: Text("Delete task"),
+                            content: Text("Do you want to delete?"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context, "No");
+                                },
+                                child: Text("No"),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  Navigator.pop(context, "Yes");
 
-                        Navigator.pop(context);
+                                  await _dbHelper.deleteTask(_taskId);
+                                  Navigator.pop(context);
+                                },
+                                child: Text("Yes",
+                                    style: TextStyle(color: Colors.red)),
+                              ),
+                            ],
+                          ),
+                        );
                       }
                     },
                     child: Container(
